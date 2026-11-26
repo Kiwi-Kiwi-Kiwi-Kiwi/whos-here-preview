@@ -237,12 +237,6 @@ function render() {
     mark.style.left = (100 * (scene.start || 0)) / duration + "%";
     sceneMarks.append(mark);
   }
-  if (globe && sceneName !== lastScene && !editing) {
-    lastScene = sceneName;
-    const target = placeBook && placeBook.sceneTargets && placeBook.sceneTargets[sceneName];
-    if (target) globe.focusPlace(target.place, target.distance);
-  }
-
   const speakingIds = {};
   (view.speaking || []).forEach((person) => {
     speakingIds[person.id] = true;
@@ -447,6 +441,7 @@ Promise.all([
     globe = await mountGlobe(document.querySelector("#globe"), world, {
       places: placeBook,
       markers: markerLayer,
+      mapView: mapView,
       isVisible: function () {
         return !mapView.hidden && !document.hidden;
       },

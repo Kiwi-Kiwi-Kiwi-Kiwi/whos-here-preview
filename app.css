@@ -174,6 +174,20 @@ button, .card {
 }
 
 #globe-tools button { padding: 6px 12px; background: rgba(14, 18, 28, 0.88); }
+
+#flight-hud {
+  position: absolute;
+  left: 12px;
+  bottom: 10px;
+  z-index: 4;
+  pointer-events: none;
+  color: #f4efe6;
+  text-shadow: 0 1px 2px #000;
+  font-size: 13px;
+}
+#flight-hud p { margin: 0 0 2px; }
+#flight-prompt { color: #ffd27a; font-weight: 700; }
+#flight-readout { font-variant-numeric: tabular-nums; }
 #edit-places.on { background: var(--amber); color: #1b130c; border-color: transparent; font-weight: 700; }
 
 .pin {
