@@ -1,5 +1,3 @@
-import { mountGlobe } from "./globe.js";
-
 const LIVE_SOCKET = "ws://127.0.0.1:47632/";
 const params = new URLSearchParams(location.search);
 const preferLive = params.get("live") === "1" || (location.hostname === "127.0.0.1" && params.get("preview") !== "1");
@@ -34,7 +32,7 @@ const FALLBACK_COLOR = {
 let guide = null;
 let revealCatalog = null;
 let placeBook = null;
-let globe = null;
+let worldFrame = null;
 let revealAll = false;
 let editing = false;
 let previewTime = 820;
@@ -382,7 +380,7 @@ document.querySelector("#back").addEventListener("click", function () {
   hoverId = null;
   hideArrow();
   render();
-  if (globe) globe.resize();
+  void 0;
 });
 
 editButton.addEventListener("click", function () {
@@ -390,12 +388,16 @@ editButton.addEventListener("click", function () {
   editButton.classList.toggle("on", editing);
   editButton.textContent = editing ? "Done" : "Edit places";
   copyButton.hidden = !editing;
-  if (globe) globe.setEditing(editing);
+  const frame = document.querySelector("#world-frame");
+  if (frame && frame.contentWindow) {
+    frame.contentWindow.__godotInbox = frame.contentWindow.__godotInbox || [];
+    frame.contentWindow.__godotInbox.push({ type: "edit", on: editing, id: "village" });
+  }
 });
 
 copyButton.addEventListener("click", async function () {
-  if (!globe) return;
-  const json = globe.exportJson();
+  if (!placeBook) return;
+  const json = JSON.stringify(placeBook, null, 2) + "\n";
   try {
     await navigator.clipboard.writeText(json);
     copyButton.textContent = "Copied";
@@ -423,8 +425,26 @@ onscreenRow.addEventListener("scroll", function () {
   const card = document.querySelector('.card[data-id="' + hoverId + '"]');
   if (card) pointAt(card, hoverId);
 });
-window.addEventListener("resize", function () {
-  if (globe) globe.resize();
+window.addEventListener("message", function (event) {
+  const data = event.data;
+  if (!data || data.type !== "markers" || !Array.isArray(data.markers)) return;
+  for (const marker of data.markers) {
+    let pin = markerLayer.querySelector('[data-id="' + marker.id + '"]');
+    if (!marker.visible) {
+      if (pin) pin.hidden = true;
+      continue;
+    }
+    if (!pin) {
+      pin = document.createElement("div");
+      pin.className = "pin place";
+      pin.dataset.id = marker.id;
+      pin.textContent = marker.name || marker.id;
+      markerLayer.append(pin);
+    }
+    pin.hidden = false;
+    pin.style.left = marker.x + "px";
+    pin.style.top = marker.y + "px";
+  }
 });
 
 Promise.all([
@@ -437,23 +457,7 @@ Promise.all([
   revealCatalog = loaded[1];
   const world = loaded[2];
   placeBook = loaded[3];
-  try {
-    globe = await mountGlobe(document.querySelector("#globe"), world, {
-      places: placeBook,
-      markers: markerLayer,
-      mapView: mapView,
-      isVisible: function () {
-        return !mapView.hidden && !document.hidden;
-      },
-      onMarkerClick: function (assetId) {
-        selectedId = assetId;
-        render();
-      },
-    });
-  } catch (error) {
-    connection.textContent = "Could not start the globe";
-    console.error(error);
-  }
+  worldFrame = document.querySelector("#world-frame");
   render();
   connectLive();
 }).catch(function (error) {

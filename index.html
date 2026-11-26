@@ -26,12 +26,8 @@
 
     <div id="stage">
       <div id="map-view">
-        <canvas id="globe"></canvas>
-        <div id="flight-hud">
-          <p id="flight-prompt" hidden>Press E to fly</p>
-          <p id="flight-readout"></p>
-          <p id="flight-hint"></p>
-        </div>
+        <iframe id="world-frame" src="world/index.html" title="South Pole"></iframe>
+        <p id="world-hint">Click the world to look around. Esc releases the mouse.</p>
         <div id="marker-layer"></div>
         <div id="globe-tools">
           <button id="edit-places" type="button">Edit places</button>
