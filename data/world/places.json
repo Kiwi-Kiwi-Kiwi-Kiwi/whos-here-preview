@@ -81,7 +81,7 @@
     },
     "The village meets Aang": {
       "place": "village",
-      "distance": 0.62
+      "distance": 0.98
     },
     "Zuko trains with Iroh": {
       "place": "ship",
@@ -89,7 +89,7 @@
     },
     "Sokka drills the village": {
       "place": "village",
-      "distance": 0.62
+      "distance": 0.98
     },
     "Aang interrupts the lesson": {
       "place": "village",
@@ -97,11 +97,11 @@
     },
     "Penguin sledding": {
       "place": "penguins",
-      "distance": 0.62
+      "distance": 0.98
     },
     "The abandoned Fire Navy ship": {
       "place": "wreck",
-      "distance": 0.62
+      "distance": 0.98
     },
     "Zuko sees the flare": {
       "place": "ship",

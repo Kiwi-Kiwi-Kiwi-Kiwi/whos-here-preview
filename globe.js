@@ -54,7 +54,7 @@ export async function mountGlobe(canvas, world, hooks) {
   const crop = world.crop;
   const cols = world.grid.cols;
   const rows = world.grid.rows;
-  const relief = 0.12;
+  const reliefScale = 0.2;
 
   function heightAt(lon, lat) {
     const map = fromLonLat(lon, lat, frame);
@@ -87,73 +87,99 @@ export async function mountGlobe(canvas, world, hooks) {
     const mapX = crop.x + (col / (cols - 1)) * crop.w;
     const mapY = crop.y + (row / (rows - 1)) * crop.h;
     const geo = toLonLat(mapX, mapY, frame);
-    return lonLatToVector(THREE, geo.lon, geo.lat, 1 + cellHeight(col, row) * relief);
+    return lonLatToVector(THREE, geo.lon, geo.lat, 1 + cellHeight(col, row) * reliefScale);
   }
 
-  const positions = [];
-  const colors = [];
+  const landPositions = [];
+  const landColors = [];
+  const waterPositions = [];
+  const tris = [
+    [0, 2, 1],
+    [0, 3, 2],
+  ];
   for (let row = 0; row < rows - 1; row++) {
     for (let col = 0; col < cols - 1; col++) {
       const biome = world.biomes[row * cols + col];
-      const tint = BIOMES[biome] || BIOMES[0];
-      const shade = 0.9 + ((col * 3 + row) % 5) * 0.025;
       const corners = [corner(col, row), corner(col + 1, row), corner(col + 1, row + 1), corner(col, row + 1)];
-      const triangles = [
-        [0, 1, 2],
-        [0, 2, 3],
-      ];
-      for (const triangle of triangles) {
+      if (biome === 0) {
+        const flat = corners.map((point) => point.clone().normalize().multiplyScalar(0.998));
+        for (const triangle of tris) {
+          for (const index of triangle) waterPositions.push(flat[index].x, flat[index].y, flat[index].z);
+        }
+        continue;
+      }
+      const tint = BIOMES[biome] || BIOMES[1];
+      const shade = 0.96 + ((col + row) % 3) * 0.02;
+      for (const triangle of tris) {
         for (const index of triangle) {
-          positions.push(corners[index].x, corners[index].y, corners[index].z);
-          colors.push(tint[0] * shade, tint[1] * shade, tint[2] * shade);
+          landPositions.push(corners[index].x, corners[index].y, corners[index].z);
+          landColors.push(tint[0] * shade, tint[1] * shade, tint[2] * shade);
         }
       }
     }
   }
 
-  const geometry = new THREE.BufferGeometry();
-  geometry.setAttribute("position", new THREE.Float32BufferAttribute(positions, 3));
-  geometry.setAttribute("color", new THREE.Float32BufferAttribute(colors, 3));
-  geometry.computeVertexNormals();
-  const terrain = new THREE.Mesh(
-    geometry,
+  function meshFrom(positions, colors, material) {
+    const geometry = new THREE.BufferGeometry();
+    geometry.setAttribute("position", new THREE.Float32BufferAttribute(positions, 3));
+    if (colors) geometry.setAttribute("color", new THREE.Float32BufferAttribute(colors, 3));
+    geometry.computeVertexNormals();
+    return new THREE.Mesh(geometry, material);
+  }
+
+  const terrain = meshFrom(
+    landPositions,
+    landColors,
     new THREE.MeshLambertMaterial({ vertexColors: true, flatShading: true })
   );
-
-  const coast = new THREE.Group();
-  for (const ring of world.coastlines || []) {
-    const linePoints = ring.points.map((point) => {
-      const mapX = crop.x + (point.x / (cols - 1)) * crop.w;
-      const mapY = crop.y + (point.y / (rows - 1)) * crop.h;
-      const geo = toLonLat(mapX, mapY, frame);
-      return lonLatToVector(THREE, geo.lon, geo.lat, 1.02);
-    });
-    if (linePoints.length > 2) linePoints.push(linePoints[0]);
-    const line = new THREE.Line(
-      new THREE.BufferGeometry().setFromPoints(linePoints),
-      new THREE.LineBasicMaterial({ color: 0xf2f7fb })
-    );
-    coast.add(line);
+  const skirt = [];
+  const lon0 = world.bounds.lon[0] - 100;
+  const lon1 = world.bounds.lon[1] + 100;
+  const lat0 = Math.max(-89, world.bounds.lat[0] - 36);
+  const lat1 = Math.min(89, world.bounds.lat[1] + 36);
+  const skirtLon = 80;
+  const skirtLat = 36;
+  for (let j = 0; j < skirtLat; j++) {
+    for (let i = 0; i < skirtLon; i++) {
+      const aLon = lon0 + ((lon1 - lon0) * i) / skirtLon;
+      const bLon = lon0 + ((lon1 - lon0) * (i + 1)) / skirtLon;
+      const aLat = lat1 - ((lat1 - lat0) * j) / skirtLat;
+      const bLat = lat1 - ((lat1 - lat0) * (j + 1)) / skirtLat;
+      const points = [
+        lonLatToVector(THREE, aLon, aLat, 0.99),
+        lonLatToVector(THREE, bLon, aLat, 0.99),
+        lonLatToVector(THREE, bLon, bLat, 0.99),
+        lonLatToVector(THREE, aLon, bLat, 0.99),
+      ];
+      for (const triangle of tris) {
+        for (const index of triangle) skirt.push(points[index].x, points[index].y, points[index].z);
+      }
+    }
   }
+  const ocean = meshFrom(
+    waterPositions.concat(skirt),
+    null,
+    new THREE.MeshLambertMaterial({ color: 0x1c527f, flatShading: true })
+  );
 
   const markerGroup = new THREE.Group();
   const markerMesh = new Map();
   const scene = new THREE.Scene();
-  scene.background = new THREE.Color(0x101a2e);
-  scene.add(terrain, coast, markerGroup);
+  scene.background = new THREE.Color(0x12324f);
+  scene.add(ocean, terrain, markerGroup);
   scene.add(new THREE.HemisphereLight(0xd5e4f5, 0x1b2838, 0.95));
   const sun = new THREE.DirectionalLight(0xfff1dc, 1.25);
   sun.position.set(-2, 3, 2);
   scene.add(sun);
 
-  const camera = new THREE.PerspectiveCamera(38, 1, 0.05, 20);
+  const camera = new THREE.PerspectiveCamera(24, 1, 0.02, 20);
   const renderer = new THREE.WebGLRenderer({ canvas: canvas, antialias: true, powerPreference: "high-performance" });
   renderer.setPixelRatio(Math.min(window.devicePixelRatio || 1, 1.25));
   renderer.outputColorSpace = THREE.SRGBColorSpace;
 
   const markers = hooks.markers;
   const dom = new Map();
-  const focus = { lon: (world.bounds.lon[0] + world.bounds.lon[1]) / 2, lat: (world.bounds.lat[0] + world.bounds.lat[1]) / 2, distance: 1.05, yaw: 0.35, pitch: 0.78 };
+  const focus = { lon: (world.bounds.lon[0] + world.bounds.lon[1]) / 2, lat: (world.bounds.lat[0] + world.bounds.lat[1]) / 2 + 1.5, distance: 1.05, yaw: 0.15, pitch: 0.42 };
   const goal = Object.assign({}, focus);
   let editing = false;
   let dragging = null;
@@ -168,7 +194,7 @@ export async function mountGlobe(canvas, world, hooks) {
 
   function surfacePoint(place) {
     const height = heightAt(place.lon, place.lat);
-    return lonLatToVector(THREE, place.lon, place.lat, 1 + height * relief + 0.025);
+    return lonLatToVector(THREE, place.lon, place.lat, 1 + height * reliefScale + 0.02);
   }
 
   function rebuildMarkers() {
@@ -224,7 +250,7 @@ export async function mountGlobe(canvas, world, hooks) {
     );
     const raycaster = new THREE.Raycaster();
     raycaster.setFromCamera(ndc, camera);
-    const hit = raycaster.intersectObject(terrain, false)[0];
+    const hit = raycaster.intersectObjects([terrain, ocean], false)[0];
     if (!hit) return;
     const geo = vectorToLonLat(hit.point);
     place.lon = Math.round(geo.lon * 1000) / 1000;
