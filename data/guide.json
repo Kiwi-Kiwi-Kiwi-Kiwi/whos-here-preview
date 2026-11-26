@@ -1,0 +1,296 @@
+{
+  "format": "whos-here-database",
+  "formatVersion": 1,
+  "showId": "atla",
+  "showTitle": "Avatar: The Last Airbender",
+  "key": "s01e01",
+  "title": "The Boy in the Iceberg",
+  "season": 1,
+  "episode": 1,
+  "precision": "approximate",
+  "precisionNote": "Every range below is approximate. The order of scenes follows the public episode, and the clock times are rounded from a fan timed transcript (avatard.org, 'The Boy in the Iceberg'). They were not measured on Netflix. A Netflix logo, a different cut, or a few seconds of drift will push them off. English subtitles replace this guide as soon as a line matches. Tag mode replaces it too.",
+  "source": {
+    "name": "Rounded scene guide derived from a public timed transcript",
+    "url": "https://avatard.org/atla_b1/e1/",
+    "note": "These are scene-level ranges, not per-line Netflix timestamps. Collection mode replaces them."
+  },
+  "builtAt": null,
+  "lineCount": 0,
+  "scenes": [
+    {
+      "id": 0,
+      "episodeKey": "s01e01",
+      "name": "Opening narration",
+      "summary": "Opening narration. Katara speaks over the titles and the first shots of the sea.",
+      "description": "Opening narration. Katara speaks over the titles and the first shots of the sea.",
+      "characterIds": [
+        "katara"
+      ],
+      "roles": {
+        "katara": "voiceover"
+      },
+      "start": 2,
+      "end": 72
+    },
+    {
+      "id": 1,
+      "episodeKey": "s01e01",
+      "name": "Katara and Sokka fishing",
+      "summary": "Katara and Sokka fish from a canoe. Her waterbending cracks the iceberg.",
+      "description": "Katara and Sokka fish from a canoe. Her waterbending cracks the iceberg.",
+      "characterIds": [
+        "katara",
+        "sokka"
+      ],
+      "roles": {},
+      "start": 118,
+      "end": 300
+    },
+    {
+      "id": 2,
+      "episodeKey": "s01e01",
+      "name": "The boy in the iceberg",
+      "summary": "Aang is visible in the ice. Katara and Sokka are at the floe.",
+      "description": "Aang is visible in the ice. Katara and Sokka are at the floe.",
+      "characterIds": [
+        "katara",
+        "sokka",
+        "aang"
+      ],
+      "roles": {},
+      "start": 300,
+      "end": 344
+    },
+    {
+      "id": 3,
+      "episodeKey": "s01e01",
+      "name": "Zuko's ship spots the beacon",
+      "summary": "On Zuko's ship, he and Iroh see the light from the iceberg.",
+      "description": "On Zuko's ship, he and Iroh see the light from the iceberg.",
+      "characterIds": [
+        "zuko",
+        "iroh"
+      ],
+      "roles": {},
+      "start": 344,
+      "end": 400
+    },
+    {
+      "id": 4,
+      "episodeKey": "s01e01",
+      "name": "Aang climbs out of the ice",
+      "summary": "Aang comes out of the ice and talks with Katara and Sokka.",
+      "description": "Aang comes out of the ice and talks with Katara and Sokka.",
+      "characterIds": [
+        "aang",
+        "katara",
+        "sokka"
+      ],
+      "roles": {},
+      "start": 404,
+      "end": 465
+    },
+    {
+      "id": 5,
+      "episodeKey": "s01e01",
+      "name": "Appa wakes",
+      "summary": "Appa wakes. The three of them ride him back toward the village.",
+      "description": "Appa wakes. The three of them ride him back toward the village.",
+      "characterIds": [
+        "aang",
+        "katara",
+        "sokka",
+        "appa"
+      ],
+      "roles": {},
+      "start": 465,
+      "end": 622
+    },
+    {
+      "id": 6,
+      "episodeKey": "s01e01",
+      "name": "Night on Zuko's ship",
+      "summary": "Night on Zuko's ship. Iroh tells him to sleep.",
+      "description": "Night on Zuko's ship. Iroh tells him to sleep.",
+      "characterIds": [
+        "zuko",
+        "iroh"
+      ],
+      "roles": {},
+      "start": 638,
+      "end": 672
+    },
+    {
+      "id": 7,
+      "episodeKey": "s01e01",
+      "name": "What happened to the Avatar",
+      "summary": "Katara asks Aang, quietly, what happened to the Avatar.",
+      "description": "Katara asks Aang, quietly, what happened to the Avatar.",
+      "characterIds": [
+        "katara",
+        "aang"
+      ],
+      "roles": {},
+      "start": 683,
+      "end": 706
+    },
+    {
+      "id": 8,
+      "episodeKey": "s01e01",
+      "name": "The village meets Aang",
+      "summary": "Morning in the village. Aang meets Gran-Gran and shows the glider.",
+      "description": "Morning in the village. Aang meets Gran-Gran and shows the glider.",
+      "characterIds": [
+        "aang",
+        "katara",
+        "sokka",
+        "kanna",
+        "village-children",
+        "villagers"
+      ],
+      "roles": {},
+      "start": 751,
+      "end": 900
+    },
+    {
+      "id": 9,
+      "episodeKey": "s01e01",
+      "name": "Zuko trains with Iroh",
+      "summary": "Iroh drills Zuko while two soldiers look on.",
+      "description": "Iroh drills Zuko while two soldiers look on.",
+      "characterIds": [
+        "zuko",
+        "iroh",
+        "fire-nation-soldiers"
+      ],
+      "roles": {},
+      "start": 904,
+      "end": 962
+    },
+    {
+      "id": 10,
+      "episodeKey": "s01e01",
+      "name": "Sokka drills the village",
+      "summary": "Sokka drills the village boys.",
+      "description": "Sokka drills the village boys.",
+      "characterIds": [
+        "sokka",
+        "village-children"
+      ],
+      "roles": {},
+      "start": 965,
+      "end": 997
+    },
+    {
+      "id": 11,
+      "episodeKey": "s01e01",
+      "name": "Aang interrupts the lesson",
+      "summary": "Aang and Katara interrupt the lesson. The kids play on Appa.",
+      "description": "Aang and Katara interrupt the lesson. The kids play on Appa.",
+      "characterIds": [
+        "sokka",
+        "village-children",
+        "aang",
+        "katara",
+        "appa"
+      ],
+      "roles": {},
+      "start": 997,
+      "end": 1045
+    },
+    {
+      "id": 12,
+      "episodeKey": "s01e01",
+      "name": "Penguin sledding",
+      "summary": "Penguin sledding, and the promise of a waterbending teacher.",
+      "description": "Penguin sledding, and the promise of a waterbending teacher.",
+      "characterIds": [
+        "aang",
+        "katara"
+      ],
+      "roles": {},
+      "start": 1045,
+      "end": 1180
+    },
+    {
+      "id": 13,
+      "episodeKey": "s01e01",
+      "name": "The abandoned Fire Navy ship",
+      "summary": "They explore the abandoned Fire Navy ship. Katara realizes how long Aang was frozen.",
+      "description": "They explore the abandoned Fire Navy ship. Katara realizes how long Aang was frozen.",
+      "characterIds": [
+        "aang",
+        "katara"
+      ],
+      "roles": {},
+      "start": 1180,
+      "end": 1340
+    },
+    {
+      "id": 14,
+      "episodeKey": "s01e01",
+      "name": "Zuko sees the flare",
+      "summary": "Zuko watches them through a telescope and says he has found the Avatar. Iroh is called for and is not shown.",
+      "description": "Zuko watches them through a telescope and says he has found the Avatar. Iroh is called for and is not shown.",
+      "characterIds": [
+        "zuko"
+      ],
+      "roles": {},
+      "start": 1343,
+      "end": 1365
+    }
+  ],
+  "lines": [],
+  "characters": {
+    "katara": {
+      "name": "Katara",
+      "description": "A Southern Water Tribe waterbender, and the one who cracks Aang's iceberg.",
+      "element": "water"
+    },
+    "sokka": {
+      "name": "Sokka",
+      "description": "Katara's older brother, a nonbending warrior with a boomerang and a plan.",
+      "element": "none"
+    },
+    "aang": {
+      "name": "Aang",
+      "description": "The Avatar, a playful Air Nomad who slept in the ice for a hundred years.",
+      "element": "air"
+    },
+    "zuko": {
+      "name": "Zuko",
+      "description": "Exiled prince of the Fire Nation, hunting the Avatar to restore his honor.",
+      "element": "fire"
+    },
+    "iroh": {
+      "name": "Iroh",
+      "description": "Zuko's uncle, a retired general who would rather pour tea than chase glory.",
+      "element": "fire"
+    },
+    "appa": {
+      "name": "Appa",
+      "description": "Aang's flying bison, and the group's way across the world.",
+      "element": "air"
+    },
+    "kanna": {
+      "name": "Gran-Gran",
+      "description": "Kanna, Katara and Sokka's grandmother.",
+      "element": "none"
+    },
+    "village-children": {
+      "name": "Village children",
+      "description": "Kids of the Southern Water Tribe who crowd around Aang.",
+      "element": "none"
+    },
+    "villagers": {
+      "name": "Villagers",
+      "description": "The gathered people of the Southern Water Tribe.",
+      "element": "none"
+    },
+    "fire-nation-soldiers": {
+      "name": "Fire Nation soldiers",
+      "description": "Crew and firebenders aboard Zuko's ship.",
+      "element": "fire"
+    }
+  }
+}

@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Who's Here</title>
+    <link rel="stylesheet" href="app.css" />
+  </head>
+  <body>
+    <header>
+      <h1 id="title">The Boy in the Iceberg</h1>
+      <div class="cluster">
+        <p id="connection">Preview (simulated playback)</p>
+        <button id="reveal-all" type="button" aria-pressed="false">Reveal all</button>
+      </div>
+    </header>
+
+    <div class="progress">
+      <button id="play" type="button">Play</button>
+      <div class="track">
+        <input id="scrub" type="range" min="0" max="1365" value="200" aria-label="Episode position" />
+        <div id="markers"></div>
+      </div>
+      <span id="clock">3:20</span>
+    </div>
+
+    <div id="stage">
+      <div id="map-view">
+        <div id="map-stage">
+          <img id="map" alt="South Pole continent, Avatar Wiki map" src="images/south-pole-map.png" />
+          <div id="scene-ring" hidden></div>
+          <div id="pins"></div>
+        </div>
+        <p id="map-credit"></p>
+      </div>
+      <div id="detail" hidden>
+        <button id="back" type="button">Back to map</button>
+        <div id="detail-body"></div>
+      </div>
+    </div>
+
+    <section>
+      <h2>Assets</h2>
+      <div id="assets" class="row"></div>
+    </section>
+
+    <section>
+      <h2>On screen</h2>
+      <div id="onscreen" class="row"></div>
+    </section>
+
+    <svg id="arrow" aria-hidden="true">
+      <line id="arrow-line"></line>
+    </svg>
+    <p id="offmap" hidden>Asset not on map</p>
+
+    <footer>
+      <p>
+        Map and pictures are from the Avatar Wiki on static.wikia.nocookie.net (CC BY-SA). Scene times are the
+        rough transcript guide, not a Netflix subtitle file. Add <code>?live=1</code> to follow
+        <code>ws://127.0.0.1:47632</code>.
+      </p>
+    </footer>
+    <script src="lookup.js"></script>
+    <script src="app.js"></script>
+  </body>
+</html>

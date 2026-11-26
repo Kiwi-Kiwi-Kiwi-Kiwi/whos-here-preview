@@ -1,0 +1,411 @@
+{
+  "format": "whos-here-reveal",
+  "formatVersion": 1,
+  "showId": "atla",
+  "license": "CC BY-SA 3.0",
+  "credit": "Facts are short summaries of Avatar Wiki articles, written for this companion. The wiki text is by its contributors under CC BY-SA 3.0. https://avatar.fandom.com/wiki/Avatar_Wiki",
+  "assets": [
+    {
+      "id": "zuko-ship",
+      "name": "Zuko's ship",
+      "type": "object",
+      "imageUrl": "images/zuko-ship.png",
+      "imageCredit": "Avatar Wiki file Zuko's ship.png, static.wikia.nocookie.net",
+      "sourceUrl": "https://avatar.fandom.com/wiki/Zuko%27s_ship"
+    },
+    {
+      "id": "appa",
+      "name": "Appa",
+      "type": "creature",
+      "imageUrl": "images/appa.png",
+      "imageCredit": "Avatar Wiki file Appa flying.png, static.wikia.nocookie.net",
+      "sourceUrl": "https://avatar.fandom.com/wiki/Appa"
+    },
+    {
+      "id": "iceberg",
+      "name": "The iceberg",
+      "type": "place",
+      "imageUrl": "images/iceberg.png",
+      "imageCredit": "Avatar Wiki file Iceberg spikes.png, static.wikia.nocookie.net",
+      "sourceUrl": "https://avatar.fandom.com/wiki/The_Boy_in_the_Iceberg"
+    },
+    {
+      "id": "southern-village",
+      "name": "Southern Water Tribe village",
+      "type": "place",
+      "imageUrl": "images/village.png",
+      "imageCredit": "Avatar Wiki file Southern Water Tribe village.png, static.wikia.nocookie.net",
+      "sourceUrl": "https://avatar.fandom.com/wiki/Southern_Water_Tribe"
+    },
+    {
+      "id": "fire-navy-wreck",
+      "name": "Fire Navy wreck",
+      "type": "object",
+      "imageUrl": "images/wreck.png",
+      "imageCredit": "Avatar Wiki file Fire Navy blockade.png, static.wikia.nocookie.net",
+      "sourceUrl": "https://avatar.fandom.com/wiki/Fire_Nation_cruiser"
+    },
+    {
+      "id": "katara-necklace",
+      "name": "Katara's necklace",
+      "type": "object",
+      "imageUrl": "images/necklace.png",
+      "imageCredit": "Avatar Wiki file Katara's necklace.png, static.wikia.nocookie.net",
+      "sourceUrl": "https://avatar.fandom.com/wiki/Katara%27s_necklace"
+    },
+    {
+      "id": "sokka-boomerang",
+      "name": "Sokka's boomerang",
+      "type": "object",
+      "imageUrl": "images/boomerang.png",
+      "imageCredit": "Avatar Wiki file Boomerang.png, static.wikia.nocookie.net",
+      "sourceUrl": "https://avatar.fandom.com/wiki/Sokka"
+    },
+    {
+      "id": "aang",
+      "name": "Aang",
+      "type": "character",
+      "imageUrl": "images/aang.png",
+      "imageCredit": "Avatar Wiki file Pilot - Aang.png, static.wikia.nocookie.net",
+      "sourceUrl": "https://avatar.fandom.com/wiki/Aang"
+    },
+    {
+      "id": "katara",
+      "name": "Katara",
+      "type": "character",
+      "imageUrl": "images/katara.png",
+      "imageCredit": "Avatar Wiki file Katara gesturing.png, static.wikia.nocookie.net",
+      "sourceUrl": "https://avatar.fandom.com/wiki/Katara"
+    },
+    {
+      "id": "sokka",
+      "name": "Sokka",
+      "type": "character",
+      "imageUrl": "images/sokka.png",
+      "imageCredit": "Avatar Wiki file Sokka.png, static.wikia.nocookie.net",
+      "sourceUrl": "https://avatar.fandom.com/wiki/Sokka"
+    },
+    {
+      "id": "zuko",
+      "name": "Zuko",
+      "type": "character",
+      "imageUrl": "images/zuko.png",
+      "imageCredit": "Avatar Wiki file Zuko.png, static.wikia.nocookie.net",
+      "sourceUrl": "https://avatar.fandom.com/wiki/Zuko"
+    },
+    {
+      "id": "iroh",
+      "name": "Iroh",
+      "type": "character",
+      "imageUrl": "images/iroh.png",
+      "imageCredit": "Avatar Wiki file Iroh smiling.png, static.wikia.nocookie.net",
+      "sourceUrl": "https://avatar.fandom.com/wiki/Iroh"
+    }
+  ],
+  "facts": [
+    {
+      "id": "ship-beacon",
+      "assetId": "zuko-ship",
+      "text": "A Fire Nation ship is on the water when the iceberg's beam of light goes up. Zuko is the one standing on deck.",
+      "sourceUrl": "https://avatar.fandom.com/wiki/Zuko%27s_ship",
+      "unlock": {
+        "episodeKey": "s01e01",
+        "seasonNumber": 1,
+        "episodeNumber": 1,
+        "transcriptIndex": 42,
+        "fallbackTime": 344,
+        "confidence": "transcript-anchor",
+        "derived": "The stage direction cuts from the iceberg's beam to a Fire Nation ship and the boy on deck."
+      }
+    },
+    {
+      "id": "ship-hunt",
+      "assetId": "zuko-ship",
+      "text": "Zuko orders the helmsman to steer for that light. He says he needs to capture the Avatar.",
+      "sourceUrl": "https://avatar.fandom.com/wiki/Zuko%27s_ship",
+      "unlock": {
+        "episodeKey": "s01e01",
+        "seasonNumber": 1,
+        "episodeNumber": 1,
+        "transcriptIndex": 49,
+        "fallbackTime": 360,
+        "confidence": "transcript-anchor",
+        "derived": "Zuko's line on the ship, after Iroh suggests the light might be nothing."
+      }
+    },
+    {
+      "id": "ship-destroyed",
+      "assetId": "zuko-ship",
+      "text": "Zhao later hires pirates to blow the ship up with blasting jelly. Zuko survives the blast. That is The Waterbending Master, not this episode.",
+      "sourceUrl": "https://avatar.fandom.com/wiki/Zuko%27s_ship",
+      "unlock": {
+        "episodeKey": "s01e18",
+        "seasonNumber": 1,
+        "episodeNumber": 18,
+        "transcriptIndex": null,
+        "fallbackTime": null,
+        "atEpisodeEnd": true,
+        "confidence": "episode-end",
+        "derived": "Avatar Wiki places the explosion in The Waterbending Master. This build has no transcript anchor there, so the fact stays locked until that episode is over."
+      }
+    },
+    {
+      "id": "appa-named",
+      "assetId": "appa",
+      "text": "Aang introduces the sky bison as Appa, his flying bison.",
+      "sourceUrl": "https://avatar.fandom.com/wiki/Appa",
+      "unlock": {
+        "episodeKey": "s01e01",
+        "seasonNumber": 1,
+        "episodeNumber": 1,
+        "transcriptIndex": 71,
+        "fallbackTime": 480,
+        "confidence": "transcript-anchor",
+        "derived": "Aang's line after Appa wakes in the ice."
+      }
+    },
+    {
+      "id": "appa-century",
+      "assetId": "appa",
+      "text": "Katara works out that Aang was in the ice for about a hundred years. Appa was in there with him.",
+      "sourceUrl": "https://avatar.fandom.com/wiki/Appa",
+      "unlock": {
+        "episodeKey": "s01e01",
+        "seasonNumber": 1,
+        "episodeNumber": 1,
+        "transcriptIndex": 200,
+        "fallbackTime": 1280,
+        "confidence": "transcript-anchor",
+        "derived": "Katara asks how long he was in the iceberg, inside the abandoned ship."
+      }
+    },
+    {
+      "id": "iceberg-light",
+      "assetId": "iceberg",
+      "text": "Katara's waterbending cracks a towering iceberg. A beam of light shoots out of it.",
+      "sourceUrl": "https://avatar.fandom.com/wiki/The_Boy_in_the_Iceberg",
+      "unlock": {
+        "episodeKey": "s01e01",
+        "seasonNumber": 1,
+        "episodeNumber": 1,
+        "transcriptIndex": 42,
+        "fallbackTime": 300,
+        "confidence": "transcript-anchor",
+        "derived": "The stage direction of the iceberg bursting and the beam of light."
+      }
+    },
+    {
+      "id": "aang-name",
+      "assetId": "aang",
+      "text": "The boy from the ice says his name is Aang, once he is done sneezing.",
+      "sourceUrl": "https://avatar.fandom.com/wiki/Aang",
+      "unlock": {
+        "episodeKey": "s01e01",
+        "seasonNumber": 1,
+        "episodeNumber": 1,
+        "transcriptIndex": 77,
+        "fallbackTime": 430,
+        "confidence": "transcript-anchor",
+        "derived": "Aang's introduction on the ice."
+      }
+    },
+    {
+      "id": "aang-avatar-state",
+      "assetId": "aang",
+      "text": "Aang enters the Avatar state at the Southern Water Tribe when Zuko comes back for him. That fight is the next episode.",
+      "sourceUrl": "https://avatar.fandom.com/wiki/Aang",
+      "unlock": {
+        "episodeKey": "s01e02",
+        "seasonNumber": 1,
+        "episodeNumber": 2,
+        "transcriptIndex": null,
+        "fallbackTime": null,
+        "atEpisodeEnd": true,
+        "confidence": "episode-end",
+        "derived": "The Avatar Returns shows the Avatar state. No line anchor is bundled for that episode, so this stays locked until the episode is over."
+      }
+    },
+    {
+      "id": "aang-tattoos",
+      "assetId": "aang",
+      "text": "Getting dressed in the village, Aang's blue arrow tattoos show on his arms, legs, back, and head.",
+      "sourceUrl": "https://avatar.fandom.com/wiki/Aang",
+      "unlock": {
+        "episodeKey": "s01e01",
+        "seasonNumber": 1,
+        "episodeNumber": 1,
+        "transcriptIndex": 107,
+        "fallbackTime": 780,
+        "confidence": "transcript-anchor",
+        "derived": "The stage direction in the tent, before he meets the village."
+      }
+    },
+    {
+      "id": "katara-only-bender",
+      "assetId": "katara",
+      "text": "Katara says she is the only waterbender in the whole South Pole.",
+      "sourceUrl": "https://avatar.fandom.com/wiki/Katara",
+      "unlock": {
+        "episodeKey": "s01e01",
+        "seasonNumber": 1,
+        "episodeNumber": 1,
+        "transcriptIndex": 181,
+        "fallbackTime": 1100,
+        "confidence": "transcript-anchor",
+        "derived": "Her line while she and Aang are with the penguins."
+      }
+    },
+    {
+      "id": "necklace-origin",
+      "assetId": "katara-necklace",
+      "text": "The blue pendant is a betrothal necklace that belonged to Katara's mother. The show explains that when it is stolen, in The Waterbending Scroll.",
+      "sourceUrl": "https://avatar.fandom.com/wiki/Katara%27s_necklace",
+      "unlock": {
+        "episodeKey": "s01e09",
+        "seasonNumber": 1,
+        "episodeNumber": 9,
+        "transcriptIndex": null,
+        "fallbackTime": null,
+        "atEpisodeEnd": true,
+        "confidence": "episode-end",
+        "derived": "The pilot transcript never mentions the necklace. The mother's story is a later episode, so it stays locked until The Waterbending Scroll is over."
+      }
+    },
+    {
+      "id": "sokka-canoe",
+      "assetId": "sokka",
+      "text": "Sokka is out in the canoe with Katara, trying to spear a fish and telling her to watch how it is done.",
+      "sourceUrl": "https://avatar.fandom.com/wiki/Sokka",
+      "unlock": {
+        "episodeKey": "s01e01",
+        "seasonNumber": 1,
+        "episodeNumber": 1,
+        "transcriptIndex": 2,
+        "fallbackTime": 130,
+        "confidence": "transcript-anchor",
+        "derived": "Sokka's first spoken line on the water."
+      }
+    },
+    {
+      "id": "boomerang-sharpen",
+      "assetId": "sokka-boomerang",
+      "text": "In the village, Sokka sits by the tent sharpening his boomerang while Aang is pulled out to meet everyone.",
+      "sourceUrl": "https://avatar.fandom.com/wiki/Sokka",
+      "unlock": {
+        "episodeKey": "s01e01",
+        "seasonNumber": 1,
+        "episodeNumber": 1,
+        "transcriptIndex": 107,
+        "fallbackTime": 800,
+        "confidence": "transcript-anchor",
+        "derived": "The stage direction in the tent names the boomerang."
+      }
+    },
+    {
+      "id": "village-meet",
+      "assetId": "southern-village",
+      "text": "Katara walks Aang out and tells him this gathering is the entire village.",
+      "sourceUrl": "https://avatar.fandom.com/wiki/Southern_Water_Tribe",
+      "unlock": {
+        "episodeKey": "s01e01",
+        "seasonNumber": 1,
+        "episodeNumber": 1,
+        "transcriptIndex": 108,
+        "fallbackTime": 800,
+        "confidence": "transcript-anchor",
+        "derived": "Katara's line introducing the village."
+      }
+    },
+    {
+      "id": "gran-gran",
+      "assetId": "southern-village",
+      "text": "The elder who steps forward is Katara and Sokka's grandmother. She tells Aang to call her Gran-Gran.",
+      "sourceUrl": "https://avatar.fandom.com/wiki/Kanna",
+      "unlock": {
+        "episodeKey": "s01e01",
+        "seasonNumber": 1,
+        "episodeNumber": 1,
+        "transcriptIndex": 115,
+        "fallbackTime": 830,
+        "confidence": "transcript-anchor",
+        "derived": "Kanna's introduction."
+      }
+    },
+    {
+      "id": "wreck-history",
+      "assetId": "fire-navy-wreck",
+      "text": "Katara says the stranded Fire Navy ship has haunted the tribe since Gran-Gran was a little girl. It was part of the Fire Nation's first attacks.",
+      "sourceUrl": "https://avatar.fandom.com/wiki/Fire_Nation_cruiser",
+      "unlock": {
+        "episodeKey": "s01e01",
+        "seasonNumber": 1,
+        "episodeNumber": 1,
+        "transcriptIndex": 198,
+        "fallbackTime": 1260,
+        "confidence": "transcript-anchor",
+        "derived": "Katara's line inside the wreck."
+      }
+    },
+    {
+      "id": "wreck-flare",
+      "assetId": "fire-navy-wreck",
+      "text": "Aang trips a wire. The wreck's machinery spins up and fires a flare into the sky.",
+      "sourceUrl": "https://avatar.fandom.com/wiki/The_Boy_in_the_Iceberg",
+      "unlock": {
+        "episodeKey": "s01e01",
+        "seasonNumber": 1,
+        "episodeNumber": 1,
+        "transcriptIndex": 216,
+        "fallbackTime": 1340,
+        "confidence": "transcript-anchor",
+        "derived": "The stage direction of the flare leaving the shipwreck."
+      }
+    },
+    {
+      "id": "zuko-claims-avatar",
+      "assetId": "zuko",
+      "text": "Watching through a telescope, Zuko calls the boy the last airbender and says he has found the Avatar, and the hiding place.",
+      "sourceUrl": "https://avatar.fandom.com/wiki/Zuko",
+      "unlock": {
+        "episodeKey": "s01e01",
+        "seasonNumber": 1,
+        "episodeNumber": 1,
+        "transcriptIndex": 220,
+        "fallbackTime": 1350,
+        "confidence": "transcript-anchor",
+        "derived": "Zuko's last line of the episode."
+      }
+    },
+    {
+      "id": "iroh-caution",
+      "assetId": "iroh",
+      "text": "Iroh is on the ship with Zuko. He treats the light as something they have chased before and tells Zuko not to get excited over nothing.",
+      "sourceUrl": "https://avatar.fandom.com/wiki/Iroh",
+      "unlock": {
+        "episodeKey": "s01e01",
+        "seasonNumber": 1,
+        "episodeNumber": 1,
+        "transcriptIndex": 48,
+        "fallbackTime": 350,
+        "confidence": "transcript-anchor",
+        "derived": "Iroh's line about the celestial lights, before Zuko turns the ship."
+      }
+    },
+    {
+      "id": "zuko-banishment",
+      "assetId": "zuko",
+      "text": "The reason Zuko was banished, and why capturing the Avatar would restore his place, is told in The Storm.",
+      "sourceUrl": "https://avatar.fandom.com/wiki/Zuko",
+      "unlock": {
+        "episodeKey": "s01e12",
+        "seasonNumber": 1,
+        "episodeNumber": 12,
+        "transcriptIndex": null,
+        "fallbackTime": null,
+        "atEpisodeEnd": true,
+        "confidence": "episode-end",
+        "derived": "The Storm is the episode that tells the banishment. Locked until that episode is over so the pilot does not spoil it."
+      }
+    }
+  ]
+}
