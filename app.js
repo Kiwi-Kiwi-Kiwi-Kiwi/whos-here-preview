@@ -11,9 +11,6 @@ const playButton = document.querySelector("#play");
 const scrub = document.querySelector("#scrub");
 const markers = document.querySelector("#markers");
 const clock = document.querySelector("#clock");
-const pins = document.querySelector("#pins");
-const sceneRing = document.querySelector("#scene-ring");
-const mapCredit = document.querySelector("#map-credit");
 const mapView = document.querySelector("#map-view");
 const detail = document.querySelector("#detail");
 const detailBody = document.querySelector("#detail-body");
@@ -21,6 +18,13 @@ const assetRow = document.querySelector("#assets");
 const onscreenRow = document.querySelector("#onscreen");
 const arrowLine = document.querySelector("#arrow-line");
 const offmap = document.querySelector("#offmap");
+const insetsEl = document.querySelector("#insets");
+const worldPanel = document.querySelector("#world-panel");
+const worldMap = document.querySelector("#world-map");
+const worldPins = document.querySelector("#world-pins");
+const sceneRing = document.querySelector("#scene-ring");
+const mapSource = document.querySelector("#map-source");
+const spoilerDialog = document.querySelector("#spoiler-dialog");
 
 const FALLBACK_COLOR = {
   aang: "#e6b15a",
@@ -34,12 +38,14 @@ let guide = null;
 let revealCatalog = null;
 let locations = null;
 let revealAll = false;
-let previewTime = 200;
+let previewTime = 860;
 let playing = false;
 let live = null;
 let liveSocket = null;
 let selectedId = null;
 let colorCache = {};
+let hoverId = null;
+let tracking = false;
 
 function averageColor(img, id) {
   if (colorCache[id]) return colorCache[id];
@@ -86,13 +92,82 @@ function activeTime() {
   return previewTime;
 }
 
-function scenePlace(name) {
-  const table = (locations && locations.scenes) || {};
-  return table[name] || null;
-}
-
 function framesFor(id) {
   return (locations && locations.assets && locations.assets[id]) || [];
+}
+
+function sceneView(name) {
+  const scenes = (locations && locations.scenes) || {};
+  const episode = (locations && locations.episode) || { cx: 50, cy: 50, zoom: 4 };
+  const scene = scenes[name] || {};
+  const cx = scene.cx != null ? scene.cx : episode.cx;
+  const cy = scene.cy != null ? scene.cy : episode.cy;
+  return {
+    cx: cx,
+    cy: cy,
+    zoom: scene.zoom != null ? scene.zoom : episode.zoom,
+    x: scene.x != null ? scene.x : cx,
+    y: scene.y != null ? scene.y : cy,
+  };
+}
+
+function spans(view) {
+  const map = locations.worldMap;
+  const aspect = (locations.frame && locations.frame.aspect) || 0.82;
+  const spanX = 100 / view.zoom;
+  const spanY = (spanX * (map.width / map.height)) / aspect;
+  let top = view.cy - spanY / 2;
+  const maxBottom = 87.5;
+  if (top + spanY > maxBottom) top = maxBottom - spanY;
+  if (top < 0) top = 0;
+  return {
+    spanX: spanX,
+    spanY: spanY,
+    left: view.cx - spanX / 2,
+    top: top,
+  };
+}
+
+function worldToView(x, y, view) {
+  const box = spans(view);
+  const px = ((x - box.left) / box.spanX) * 100;
+  const py = ((y - box.top) / box.spanY) * 100;
+  if (px < 0 || px > 100 || py < 0 || py > 100) return null;
+  return { x: px, y: py };
+}
+
+function worldToInsetImage(x, y, inset) {
+  const bounds = inset.world;
+  if (x < bounds.x || y < bounds.y || x > bounds.x + bounds.w || y > bounds.y + bounds.h) return null;
+  const across = (x - bounds.x) / bounds.w;
+  const down = (y - bounds.y) / bounds.h;
+  const content = inset.content || { x: 0, y: 0, w: 100, h: 100 };
+  return { x: content.x + across * content.w, y: content.y + down * content.h };
+}
+
+function coverPoint(img, xPercent, yPercent) {
+  const panel = img.getBoundingClientRect();
+  const naturalW = img.naturalWidth || img.width;
+  const naturalH = img.naturalHeight || img.height;
+  if (!panel.width || !panel.height || !naturalW || !naturalH) return null;
+  const scale = Math.max(panel.width / naturalW, panel.height / naturalH);
+  const drawnW = naturalW * scale;
+  const drawnH = naturalH * scale;
+  const offsetX = (panel.width - drawnW) / 2;
+  const offsetY = (panel.height - drawnH) / 2;
+  const px = offsetX + (xPercent / 100) * drawnW;
+  const py = offsetY + (yPercent / 100) * drawnH;
+  if (px < 0 || py < 0 || px > panel.width || py > panel.height) return null;
+  return { x: (px / panel.width) * 100, y: (py / panel.height) * 100 };
+}
+
+function applyWorldCrop(view) {
+  const box = spans(view);
+  worldPanel.style.aspectRatio = String((locations.frame && locations.frame.aspect) || 0.82);
+  worldMap.style.width = (100 / box.spanX) * 100 + "%";
+  worldMap.style.height = (100 / box.spanY) * 100 + "%";
+  worldMap.style.left = (-box.left / box.spanX) * 100 + "%";
+  worldMap.style.top = (-box.top / box.spanY) * 100 + "%";
 }
 
 function relevance(asset, time, place) {
@@ -101,6 +176,28 @@ function relevance(asset, time, place) {
   if (spot) score += 40;
   if (spot && place) score += Math.max(0, 36 - Math.hypot(spot.x - place.x, spot.y - place.y));
   return score;
+}
+
+function makePin(asset, spot, surface) {
+  const pin = document.createElement("button");
+  pin.type = "button";
+  pin.className = "pin " + (asset.type || "");
+  pin.dataset.id = asset.id;
+  pin.dataset.surface = surface;
+  pin.style.left = spot.x + "%";
+  pin.style.top = spot.y + "%";
+  pin.title = asset.name;
+  if (asset.imageUrl) {
+    const img = document.createElement("img");
+    img.alt = "";
+    img.src = asset.imageUrl;
+    pin.append(img);
+  }
+  pin.addEventListener("click", function () {
+    selectedId = asset.id;
+    render();
+  });
+  return pin;
 }
 
 function makeCard(asset, speaking) {
@@ -123,19 +220,35 @@ function makeCard(asset, speaking) {
     render();
   });
   card.addEventListener("mouseenter", function () {
+    hoverId = asset.id;
     pointAt(card, asset.id);
+    startTracking();
   });
-  card.addEventListener("mouseleave", hideArrow);
+  card.addEventListener("mouseleave", function () {
+    if (hoverId === asset.id) hoverId = null;
+    hideArrow();
+  });
   return card;
 }
 
+function pinFor(id) {
+  return (
+    document.querySelector('.pin[data-id="' + id + '"][data-surface="inset"]') ||
+    document.querySelector('.pin[data-id="' + id + '"]')
+  );
+}
+
 function pointAt(card, id) {
-  const pin = pins.querySelector('[data-id="' + id + '"]');
+  if (mapView.hidden) {
+    hideArrow();
+    return;
+  }
   const rect = card.getBoundingClientRect();
-  if (!pin || mapView.hidden) {
+  const pin = pinFor(id);
+  if (!pin) {
     offmap.hidden = false;
     offmap.style.left = rect.left + rect.width / 2 + "px";
-    offmap.style.top = rect.top - 28 + "px";
+    offmap.style.top = rect.top - 6 + "px";
     arrowLine.setAttribute("x1", 0);
     arrowLine.setAttribute("y1", 0);
     arrowLine.setAttribute("x2", 0);
@@ -152,8 +265,25 @@ function pointAt(card, id) {
 
 function hideArrow() {
   offmap.hidden = true;
-  arrowLine.setAttribute("x2", arrowLine.getAttribute("x1"));
-  arrowLine.setAttribute("y2", arrowLine.getAttribute("y1"));
+  arrowLine.setAttribute("x1", 0);
+  arrowLine.setAttribute("y1", 0);
+  arrowLine.setAttribute("x2", 0);
+  arrowLine.setAttribute("y2", 0);
+}
+
+function startTracking() {
+  if (tracking) return;
+  tracking = true;
+  const step = function () {
+    if (!hoverId) {
+      tracking = false;
+      return;
+    }
+    const card = document.querySelector('.card[data-id="' + hoverId + '"]');
+    if (card) pointAt(card, hoverId);
+    requestAnimationFrame(step);
+  };
+  requestAnimationFrame(step);
 }
 
 function renderDetail(asset) {
@@ -180,18 +310,49 @@ function renderDetail(asset) {
   }
 }
 
+function ensureInsets() {
+  if (insetsEl.childElementCount) return;
+  for (const inset of locations.insets || []) {
+    const panel = document.createElement("div");
+    panel.className = "inset";
+    panel.dataset.inset = inset.id;
+    const img = document.createElement("img");
+    img.className = "inset-img";
+    img.alt = inset.title || "Inset map";
+    img.src = inset.src;
+    img.addEventListener("load", function () {
+      render();
+    });
+    const ring = document.createElement("div");
+    ring.className = "inset-ring";
+    ring.hidden = true;
+    const pins = document.createElement("div");
+    pins.className = "inset-pins";
+    const link = document.createElement("a");
+    link.className = "source-link";
+    link.href = inset.sourceUrl;
+    link.target = "_blank";
+    link.rel = "noopener";
+    link.textContent = "Source";
+    panel.append(img, ring, pins, link);
+    insetsEl.append(panel);
+  }
+}
+
 function render() {
   if (!guide || !revealCatalog || !locations) return;
+  const assetScroll = assetRow.scrollLeft;
+  const screenScroll = onscreenRow.scrollLeft;
   const time = activeTime();
   const view = OnScreen.lookupAt(guide, time);
   const sceneName = view.scene && (view.scene.name || view.scene.summary);
+  const camera = sceneView(sceneName || "");
   titleEl.textContent = guide.title || "The Boy in the Iceberg";
   clock.textContent = OnScreen.formatClock(time);
   scrub.max = String(Math.max(60, ...guide.scenes.map((scene) => scene.end || 0)));
   if (document.activeElement !== scrub) scrub.value = String(Math.round(time));
   const here = positionAt(time);
   const visible = OnScreen.getVisibleAssets(guide, revealCatalog, here, { revealAll });
-  const place = scenePlace(sceneName || "");
 
   if (liveSocket && liveSocket.readyState === WebSocket.OPEN) {
     connection.textContent = live && live.episodeTitle ? "Live · " + live.episodeTitle : "Live";
@@ -200,6 +361,7 @@ function render() {
   } else {
     connection.textContent = "Preview (simulated playback)";
   }
+  revealButton.textContent = revealAll ? "Hide all" : "Reveal all";
   revealButton.setAttribute("aria-pressed", revealAll ? "true" : "false");
   playButton.textContent = playing ? "Pause" : "Play";
   playButton.classList.toggle("on", playing);
@@ -229,32 +391,52 @@ function render() {
     });
   }
 
-  pins.replaceChildren();
-  if (place) {
+  ensureInsets();
+  worldMap.src = locations.worldMap.src;
+  mapSource.href = locations.worldMap.sourceUrl;
+  applyWorldCrop(camera);
+
+  const focus = worldToView(camera.x, camera.y, camera);
+  if (focus) {
     sceneRing.hidden = false;
-    sceneRing.style.left = place.x + "%";
-    sceneRing.style.top = place.y + "%";
+    sceneRing.style.left = focus.x + "%";
+    sceneRing.style.top = focus.y + "%";
   } else {
     sceneRing.hidden = true;
   }
+
+  worldPins.replaceChildren();
+  for (const inset of locations.insets || []) {
+    const panel = insetsEl.querySelector('[data-inset="' + inset.id + '"]');
+    if (!panel) continue;
+    panel.querySelector(".inset-pins").replaceChildren();
+    const ring = panel.querySelector(".inset-ring");
+    const img = panel.querySelector(".inset-img");
+    const onImage = worldToInsetImage(camera.x, camera.y, inset);
+    const onPanel = onImage && coverPoint(img, onImage.x, onImage.y);
+    if (onPanel) {
+      ring.hidden = false;
+      ring.style.left = onPanel.x + "%";
+      ring.style.top = onPanel.y + "%";
+    } else {
+      ring.hidden = true;
+    }
+  }
+
   for (const asset of visible) {
     const spot = OnScreen.locationAt(framesFor(asset.id), time);
     if (!spot) continue;
-    const pin = document.createElement("div");
-    pin.className = "pin " + (asset.type || "");
-    pin.dataset.id = asset.id;
-    pin.style.left = spot.x + "%";
-    pin.style.top = spot.y + "%";
-    pin.title = asset.name;
-    if (asset.imageUrl) {
-      const img = document.createElement("img");
-      img.alt = "";
-      img.src = asset.imageUrl;
-      pin.append(img);
+    const onWorld = worldToView(spot.x, spot.y, camera);
+    if (onWorld) worldPins.append(makePin(asset, onWorld, "world"));
+    for (const inset of locations.insets || []) {
+      const onImage = worldToInsetImage(spot.x, spot.y, inset);
+      if (!onImage) continue;
+      const panel = insetsEl.querySelector('[data-inset="' + inset.id + '"]');
+      const img = panel && panel.querySelector(".inset-img");
+      const onPanel = img && coverPoint(img, onImage.x, onImage.y);
+      if (onPanel) panel.querySelector(".inset-pins").append(makePin(asset, onPanel, "inset"));
     }
-    pins.append(pin);
   }
-  mapCredit.textContent = (locations.map && locations.map.credit) || "";
 
   if (selectedId) {
     const asset = visible.find((item) => item.id === selectedId);
@@ -271,7 +453,7 @@ function render() {
     detail.hidden = true;
   }
 
-  const ranked = visible.slice().sort((a, b) => relevance(b, time, place) - relevance(a, time, place));
+  const ranked = visible.slice().sort((a, b) => relevance(b, time, camera) - relevance(a, time, camera));
   const onScreen = ranked.filter((asset) => asset.type === "character" && (revealAll || aroundIds[asset.id]));
   const onScreenIds = {};
   onScreen.forEach((asset) => {
@@ -296,6 +478,8 @@ function render() {
     onscreenRow.append(empty);
   }
   for (const asset of onScreen) onscreenRow.append(makeCard(asset, !!speakingIds[asset.id]));
+  assetRow.scrollLeft = assetScroll;
+  onscreenRow.scrollLeft = screenScroll;
 }
 
 function connectLive() {
@@ -336,8 +520,19 @@ function connectLive() {
 }
 
 revealButton.addEventListener("click", function () {
-  revealAll = !revealAll;
-  render();
+  if (revealAll) {
+    revealAll = false;
+    render();
+    return;
+  }
+  spoilerDialog.showModal();
+});
+
+spoilerDialog.addEventListener("close", function () {
+  if (spoilerDialog.returnValue === "confirm") {
+    revealAll = true;
+    render();
+  }
 });
 
 playButton.addEventListener("click", function () {
@@ -370,6 +565,22 @@ scrub.addEventListener("input", function () {
 
 document.querySelector("#back").addEventListener("click", function () {
   selectedId = null;
+  hoverId = null;
+  hideArrow();
+  render();
+});
+
+assetRow.addEventListener("scroll", function () {
+  if (!hoverId) return;
+  const card = document.querySelector('.card[data-id="' + hoverId + '"]');
+  if (card) pointAt(card, hoverId);
+});
+onscreenRow.addEventListener("scroll", function () {
+  if (!hoverId) return;
+  const card = document.querySelector('.card[data-id="' + hoverId + '"]');
+  if (card) pointAt(card, hoverId);
+});
+window.addEventListener("resize", function () {
   render();
 });
 

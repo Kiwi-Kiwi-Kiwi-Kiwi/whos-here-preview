@@ -26,12 +26,17 @@
 
     <div id="stage">
       <div id="map-view">
-        <div id="map-stage">
-          <img id="map" alt="South Pole continent, Avatar Wiki map" src="images/south-pole-map.png" />
-          <div id="scene-ring" hidden></div>
-          <div id="pins"></div>
+        <div id="map-row">
+          <div id="insets"></div>
+          <div id="world-panel">
+            <div id="world-view">
+              <img id="world-map" alt="Avatar world map" />
+              <div id="scene-ring" hidden></div>
+              <div id="world-pins"></div>
+            </div>
+          </div>
         </div>
-        <p id="map-credit"></p>
+        <a id="map-source" class="source-link" target="_blank" rel="noopener">Map source</a>
       </div>
       <div id="detail" hidden>
         <button id="back" type="button">Back to map</button>
@@ -39,28 +44,40 @@
       </div>
     </div>
 
-    <section>
+    <section class="band">
       <h2>Assets</h2>
       <div id="assets" class="row"></div>
     </section>
 
-    <section>
+    <section class="band">
       <h2>On screen</h2>
       <div id="onscreen" class="row"></div>
     </section>
 
     <svg id="arrow" aria-hidden="true">
-      <line id="arrow-line"></line>
+      <defs>
+        <marker id="arrowhead" markerWidth="8" markerHeight="8" refX="6" refY="3" orient="auto">
+          <path d="M0,0 L7,3 L0,6 Z" fill="#f4efe6"></path>
+        </marker>
+      </defs>
+      <line id="arrow-line" marker-end="url(#arrowhead)"></line>
     </svg>
     <p id="offmap" hidden>Asset not on map</p>
 
-    <footer>
-      <p>
-        Map and pictures are from the Avatar Wiki on static.wikia.nocookie.net (CC BY-SA). Scene times are the
-        rough transcript guide, not a Netflix subtitle file. Add <code>?live=1</code> to follow
-        <code>ws://127.0.0.1:47632</code>.
-      </p>
-    </footer>
+    <dialog id="spoiler-dialog">
+      <form method="dialog">
+        <h3>Show every spoiler?</h3>
+        <p>
+          Reveal all uncovers facts from later in this episode and from later episodes, including things the
+          characters have not reached yet.
+        </p>
+        <div class="dialog-actions">
+          <button value="cancel" type="submit">Cancel</button>
+          <button value="confirm" class="confirm" type="submit">Confirm</button>
+        </div>
+      </form>
+    </dialog>
+
     <script src="lookup.js"></script>
     <script src="app.js"></script>
   </body>

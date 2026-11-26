@@ -1,79 +1,102 @@
 {
-  "map": {
-    "src": "images/south-pole-map.png",
-    "credit": "South Pole continent map, Avatar Wiki (static.wikia.nocookie.net). File:South Pole continent map.png.",
-    "sourceUrl": "https://avatar.fandom.com/wiki/File:South_Pole_continent_map.png"
+  "worldMap": {
+    "src": "images/world-map.jpg",
+    "width": 3840,
+    "height": 2160,
+    "sourceUrl": "https://avatar.fandom.com/wiki/File:Avatar_world_map.jpeg",
+    "credit": "Avatar Wiki file Avatar world map.jpeg (static.wikia.nocookie.net), 3840×2160."
+  },
+  "frame": {
+    "aspect": 0.82
+  },
+  "episode": {
+    "cx": 48.8,
+    "cy": 79.2,
+    "zoom": 6
   },
   "scenes": {
-    "Opening narration": { "x": 46, "y": 74 },
-    "Katara and Sokka fishing": { "x": 40, "y": 82 },
-    "The boy in the iceberg": { "x": 36, "y": 78 },
-    "Zuko's ship spots the beacon": { "x": 18, "y": 62 },
-    "Aang climbs out of the ice": { "x": 36, "y": 76 },
-    "Appa wakes": { "x": 42, "y": 70 },
-    "Night on Zuko's ship": { "x": 22, "y": 58 },
-    "What happened to the Avatar": { "x": 48, "y": 64 },
-    "The village meets Aang": { "x": 50, "y": 58 },
-    "Zuko trains with Iroh": { "x": 26, "y": 56 },
-    "Sokka drills the village": { "x": 52, "y": 60 },
-    "Aang interrupts the lesson": { "x": 51, "y": 58 },
-    "Penguin sledding": { "x": 58, "y": 52 },
-    "The abandoned Fire Navy ship": { "x": 64, "y": 46 },
-    "Zuko sees the flare": { "x": 30, "y": 68 }
+    "Opening narration": { "cx": 49.5, "cy": 80.2, "zoom": 6.4, "x": 49.6, "y": 81.4 },
+    "Katara and Sokka fishing": { "cx": 49.0, "cy": 81.6, "zoom": 8.2, "x": 49.1, "y": 82.4 },
+    "The boy in the iceberg": { "cx": 47.4, "cy": 82.2, "zoom": 8.6, "x": 46.8, "y": 83.0 },
+    "Zuko's ship spots the beacon": { "cx": 44.0, "cy": 79.2, "zoom": 7.4, "x": 42.2, "y": 78.6 },
+    "Aang climbs out of the ice": { "cx": 47.2, "cy": 82.0, "zoom": 8.6, "x": 46.6, "y": 82.8 },
+    "Appa wakes": { "cx": 48.0, "cy": 81.0, "zoom": 7.8, "x": 47.0, "y": 82.6 },
+    "Night on Zuko's ship": { "cx": 44.4, "cy": 79.2, "zoom": 7.6, "x": 44.2, "y": 79.2 },
+    "What happened to the Avatar": { "cx": 49.2, "cy": 80.6, "zoom": 7.6, "x": 49.0, "y": 80.8 },
+    "The village meets Aang": { "cx": 50.2, "cy": 80.2, "zoom": 8.8, "x": 50.2, "y": 80.2 },
+    "Zuko trains with Iroh": { "cx": 45.0, "cy": 79.4, "zoom": 7.6, "x": 44.4, "y": 78.9 },
+    "Sokka drills the village": { "cx": 50.4, "cy": 80.3, "zoom": 9, "x": 50.6, "y": 80.4 },
+    "Aang interrupts the lesson": { "cx": 50.2, "cy": 80.1, "zoom": 9, "x": 49.8, "y": 80.0 },
+    "Penguin sledding": { "cx": 52.2, "cy": 78.8, "zoom": 8.4, "x": 52.6, "y": 78.6 },
+    "The abandoned Fire Navy ship": { "cx": 53.4, "cy": 77.8, "zoom": 8.4, "x": 54.0, "y": 77.3 },
+    "Zuko sees the flare": { "cx": 46.4, "cy": 80.2, "zoom": 7.6, "x": 46.4, "y": 80.6 }
   },
+  "insets": [
+    {
+      "id": "village",
+      "title": "Southern Water Tribe village",
+      "src": "images/village-inset.png",
+      "sourceUrl": "https://avatar.fandom.com/wiki/File:Southern_Water_Tribe_village.png",
+      "world": { "x": 49.0, "y": 79.5, "w": 2.2, "h": 1.5 },
+      "content": { "x": 24, "y": 36, "w": 52, "h": 34 }
+    }
+  ],
   "assets": {
-    "southern-village": [{ "t": 751, "x": 50, "y": 58 }],
-    "iceberg": [{ "t": 280, "x": 36, "y": 78 }],
-    "fire-navy-wreck": [{ "t": 1180, "x": 64, "y": 46 }],
+    "southern-village": [{ "t": 751, "x": 50.2, "y": 80.2 }],
+    "iceberg": [{ "t": 280, "x": 46.8, "y": 83.0 }],
+    "fire-navy-wreck": [{ "t": 1180, "x": 54.0, "y": 77.3 }],
     "zuko-ship": [
-      { "t": 330, "x": 14, "y": 58 },
-      { "t": 400, "x": 20, "y": 62 },
-      { "t": 700, "x": 24, "y": 56 },
-      { "t": 960, "x": 28, "y": 54 },
-      { "t": 1365, "x": 32, "y": 66 }
+      { "t": 330, "x": 42.2, "y": 78.6 },
+      { "t": 400, "x": 43.4, "y": 79.0 },
+      { "t": 700, "x": 44.2, "y": 79.2 },
+      { "t": 960, "x": 45.0, "y": 79.6 },
+      { "t": 1365, "x": 46.4, "y": 80.6 }
     ],
     "appa": [
-      { "t": 450, "x": 37, "y": 76 },
-      { "t": 560, "x": 44, "y": 66 },
-      { "t": 751, "x": 49, "y": 60 },
-      { "t": 1040, "x": 56, "y": 54 },
-      { "t": 1220, "x": 62, "y": 48 }
+      { "t": 450, "x": 47.0, "y": 82.6 },
+      { "t": 560, "x": 48.4, "y": 81.2 },
+      { "t": 751, "x": 50.0, "y": 80.3 },
+      { "t": 997, "x": 50.1, "y": 80.2 },
+      { "t": 1045, "x": 52.6, "y": 78.6 },
+      { "t": 1220, "x": 53.6, "y": 77.5 }
     ],
     "aang": [
-      { "t": 300, "x": 36, "y": 76 },
-      { "t": 450, "x": 38, "y": 74 },
-      { "t": 620, "x": 47, "y": 62 },
-      { "t": 751, "x": 50, "y": 57 },
-      { "t": 1045, "x": 57, "y": 51 },
-      { "t": 1220, "x": 63, "y": 45 }
+      { "t": 300, "x": 46.6, "y": 82.8 },
+      { "t": 450, "x": 47.2, "y": 82.2 },
+      { "t": 620, "x": 49.0, "y": 80.8 },
+      { "t": 751, "x": 49.8, "y": 80.0 },
+      { "t": 997, "x": 49.9, "y": 80.1 },
+      { "t": 1045, "x": 52.4, "y": 78.5 },
+      { "t": 1220, "x": 53.8, "y": 77.2 }
     ],
     "katara": [
-      { "t": 118, "x": 41, "y": 81 },
-      { "t": 300, "x": 35, "y": 77 },
-      { "t": 500, "x": 43, "y": 68 },
-      { "t": 751, "x": 49, "y": 59 },
-      { "t": 1045, "x": 58, "y": 53 },
-      { "t": 1220, "x": 65, "y": 47 }
+      { "t": 118, "x": 48.8, "y": 82.4 },
+      { "t": 300, "x": 46.4, "y": 82.6 },
+      { "t": 500, "x": 48.2, "y": 81.0 },
+      { "t": 751, "x": 50.0, "y": 80.3 },
+      { "t": 997, "x": 50.1, "y": 80.2 },
+      { "t": 1045, "x": 52.8, "y": 78.8 },
+      { "t": 1220, "x": 54.0, "y": 77.4 }
     ],
     "sokka": [
-      { "t": 118, "x": 43, "y": 83 },
-      { "t": 300, "x": 38, "y": 79 },
-      { "t": 520, "x": 45, "y": 68 },
-      { "t": 751, "x": 53, "y": 61 },
-      { "t": 1365, "x": 53, "y": 61 }
+      { "t": 118, "x": 49.4, "y": 82.6 },
+      { "t": 300, "x": 47.0, "y": 83.2 },
+      { "t": 520, "x": 48.6, "y": 81.2 },
+      { "t": 751, "x": 50.6, "y": 80.4 },
+      { "t": 1365, "x": 50.6, "y": 80.4 }
     ],
     "zuko": [
-      { "t": 330, "x": 15, "y": 56 },
-      { "t": 700, "x": 23, "y": 54 },
-      { "t": 960, "x": 27, "y": 52 },
-      { "t": 1343, "x": 31, "y": 64 }
+      { "t": 330, "x": 42.4, "y": 78.3 },
+      { "t": 700, "x": 44.4, "y": 78.9 },
+      { "t": 960, "x": 45.2, "y": 79.3 },
+      { "t": 1343, "x": 46.6, "y": 80.3 }
     ],
     "iroh": [
-      { "t": 330, "x": 17, "y": 60 },
-      { "t": 700, "x": 25, "y": 58 },
-      { "t": 960, "x": 29, "y": 56 }
+      { "t": 330, "x": 42.0, "y": 78.9 },
+      { "t": 700, "x": 44.0, "y": 79.5 },
+      { "t": 960, "x": 44.8, "y": 79.9 }
     ],
-    "sokka-boomerang": [{ "t": 780, "x": 54, "y": 62 }],
+    "sokka-boomerang": [{ "t": 780, "x": 50.8, "y": 80.5 }],
     "katara-necklace": []
   }
 }
