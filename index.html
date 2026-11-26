@@ -19,24 +19,20 @@
       <button id="play" type="button">Play</button>
       <div class="track">
         <input id="scrub" type="range" min="0" max="1365" value="200" aria-label="Episode position" />
-        <div id="markers"></div>
+        <div id="scene-markers"></div>
       </div>
       <span id="clock">3:20</span>
     </div>
 
     <div id="stage">
       <div id="map-view">
-        <div id="map-row">
-          <div id="insets"></div>
-          <div id="world-panel">
-            <div id="world-view">
-              <img id="world-map" alt="Avatar world map" />
-              <div id="scene-ring" hidden></div>
-              <div id="world-pins"></div>
-            </div>
-          </div>
+        <canvas id="globe"></canvas>
+        <div id="marker-layer"></div>
+        <div id="globe-tools">
+          <button id="edit-places" type="button">Edit places</button>
+          <button id="copy-places" type="button" hidden>Copy JSON</button>
         </div>
-        <a id="map-source" class="source-link" target="_blank" rel="noopener">Map source</a>
+        <a id="map-source" class="source-link" href="https://avatar.fandom.com/wiki/File:Avatar_world_map.jpeg" target="_blank" rel="noopener">Map source</a>
       </div>
       <div id="detail" hidden>
         <button id="back" type="button">Back to map</button>
@@ -79,6 +75,6 @@
     </dialog>
 
     <script src="lookup.js"></script>
-    <script src="app.js"></script>
+    <script type="module" src="app.js"></script>
   </body>
 </html>

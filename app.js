@@ -1,4 +1,4 @@
-"use strict";
+import { mountGlobe } from "./globe.js";
 
 const LIVE_SOCKET = "ws://127.0.0.1:47632/";
 const params = new URLSearchParams(location.search);
@@ -9,7 +9,8 @@ const connection = document.querySelector("#connection");
 const revealButton = document.querySelector("#reveal-all");
 const playButton = document.querySelector("#play");
 const scrub = document.querySelector("#scrub");
-const markers = document.querySelector("#markers");
+const sceneMarks = document.querySelector("#scene-markers");
+const markerLayer = document.querySelector("#marker-layer");
 const clock = document.querySelector("#clock");
 const mapView = document.querySelector("#map-view");
 const detail = document.querySelector("#detail");
@@ -18,12 +19,8 @@ const assetRow = document.querySelector("#assets");
 const onscreenRow = document.querySelector("#onscreen");
 const arrowLine = document.querySelector("#arrow-line");
 const offmap = document.querySelector("#offmap");
-const insetsEl = document.querySelector("#insets");
-const worldPanel = document.querySelector("#world-panel");
-const worldMap = document.querySelector("#world-map");
-const worldPins = document.querySelector("#world-pins");
-const sceneRing = document.querySelector("#scene-ring");
-const mapSource = document.querySelector("#map-source");
+const editButton = document.querySelector("#edit-places");
+const copyButton = document.querySelector("#copy-places");
 const spoilerDialog = document.querySelector("#spoiler-dialog");
 
 const FALLBACK_COLOR = {
@@ -36,9 +33,11 @@ const FALLBACK_COLOR = {
 
 let guide = null;
 let revealCatalog = null;
-let locations = null;
+let placeBook = null;
+let globe = null;
 let revealAll = false;
-let previewTime = 860;
+let editing = false;
+let previewTime = 820;
 let playing = false;
 let live = null;
 let liveSocket = null;
@@ -46,17 +45,17 @@ let selectedId = null;
 let colorCache = {};
 let hoverId = null;
 let tracking = false;
+let lastScene = null;
 
 function averageColor(img, id) {
   if (colorCache[id]) return colorCache[id];
   const canvas = document.createElement("canvas");
-  const size = 24;
-  canvas.width = size;
-  canvas.height = size;
+  canvas.width = 24;
+  canvas.height = 24;
   const context = canvas.getContext("2d", { willReadFrequently: true });
   try {
-    context.drawImage(img, 0, 0, size, size);
-    const data = context.getImageData(0, 0, size, size).data;
+    context.drawImage(img, 0, 0, 24, 24);
+    const data = context.getImageData(0, 0, 24, 24).data;
     let r = 0;
     let g = 0;
     let b = 0;
@@ -92,112 +91,9 @@ function activeTime() {
   return previewTime;
 }
 
-function framesFor(id) {
-  return (locations && locations.assets && locations.assets[id]) || [];
-}
-
-function sceneView(name) {
-  const scenes = (locations && locations.scenes) || {};
-  const episode = (locations && locations.episode) || { cx: 50, cy: 50, zoom: 4 };
-  const scene = scenes[name] || {};
-  const cx = scene.cx != null ? scene.cx : episode.cx;
-  const cy = scene.cy != null ? scene.cy : episode.cy;
-  return {
-    cx: cx,
-    cy: cy,
-    zoom: scene.zoom != null ? scene.zoom : episode.zoom,
-    x: scene.x != null ? scene.x : cx,
-    y: scene.y != null ? scene.y : cy,
-  };
-}
-
-function spans(view) {
-  const map = locations.worldMap;
-  const aspect = (locations.frame && locations.frame.aspect) || 0.82;
-  const spanX = 100 / view.zoom;
-  const spanY = (spanX * (map.width / map.height)) / aspect;
-  let top = view.cy - spanY / 2;
-  const maxBottom = 87.5;
-  if (top + spanY > maxBottom) top = maxBottom - spanY;
-  if (top < 0) top = 0;
-  return {
-    spanX: spanX,
-    spanY: spanY,
-    left: view.cx - spanX / 2,
-    top: top,
-  };
-}
-
-function worldToView(x, y, view) {
-  const box = spans(view);
-  const px = ((x - box.left) / box.spanX) * 100;
-  const py = ((y - box.top) / box.spanY) * 100;
-  if (px < 0 || px > 100 || py < 0 || py > 100) return null;
-  return { x: px, y: py };
-}
-
-function worldToInsetImage(x, y, inset) {
-  const bounds = inset.world;
-  if (x < bounds.x || y < bounds.y || x > bounds.x + bounds.w || y > bounds.y + bounds.h) return null;
-  const across = (x - bounds.x) / bounds.w;
-  const down = (y - bounds.y) / bounds.h;
-  const content = inset.content || { x: 0, y: 0, w: 100, h: 100 };
-  return { x: content.x + across * content.w, y: content.y + down * content.h };
-}
-
-function coverPoint(img, xPercent, yPercent) {
-  const panel = img.getBoundingClientRect();
-  const naturalW = img.naturalWidth || img.width;
-  const naturalH = img.naturalHeight || img.height;
-  if (!panel.width || !panel.height || !naturalW || !naturalH) return null;
-  const scale = Math.max(panel.width / naturalW, panel.height / naturalH);
-  const drawnW = naturalW * scale;
-  const drawnH = naturalH * scale;
-  const offsetX = (panel.width - drawnW) / 2;
-  const offsetY = (panel.height - drawnH) / 2;
-  const px = offsetX + (xPercent / 100) * drawnW;
-  const py = offsetY + (yPercent / 100) * drawnH;
-  if (px < 0 || py < 0 || px > panel.width || py > panel.height) return null;
-  return { x: (px / panel.width) * 100, y: (py / panel.height) * 100 };
-}
-
-function applyWorldCrop(view) {
-  const box = spans(view);
-  worldPanel.style.aspectRatio = String((locations.frame && locations.frame.aspect) || 0.82);
-  worldMap.style.width = (100 / box.spanX) * 100 + "%";
-  worldMap.style.height = (100 / box.spanY) * 100 + "%";
-  worldMap.style.left = (-box.left / box.spanX) * 100 + "%";
-  worldMap.style.top = (-box.top / box.spanY) * 100 + "%";
-}
-
-function relevance(asset, time, place) {
-  const spot = OnScreen.locationAt(framesFor(asset.id), time);
-  let score = 0;
-  if (spot) score += 40;
-  if (spot && place) score += Math.max(0, 36 - Math.hypot(spot.x - place.x, spot.y - place.y));
-  return score;
-}
-
-function makePin(asset, spot, surface) {
-  const pin = document.createElement("button");
-  pin.type = "button";
-  pin.className = "pin " + (asset.type || "");
-  pin.dataset.id = asset.id;
-  pin.dataset.surface = surface;
-  pin.style.left = spot.x + "%";
-  pin.style.top = spot.y + "%";
-  pin.title = asset.name;
-  if (asset.imageUrl) {
-    const img = document.createElement("img");
-    img.alt = "";
-    img.src = asset.imageUrl;
-    pin.append(img);
-  }
-  pin.addEventListener("click", function () {
-    selectedId = asset.id;
-    render();
-  });
-  return pin;
+function relevance(asset) {
+  const placed = placeBook && placeBook.places.some((place) => place.assetId === asset.id);
+  return placed ? 1 : 0;
 }
 
 function makeCard(asset, speaking) {
@@ -232,10 +128,7 @@ function makeCard(asset, speaking) {
 }
 
 function pinFor(id) {
-  return (
-    document.querySelector('.pin[data-id="' + id + '"][data-surface="inset"]') ||
-    document.querySelector('.pin[data-id="' + id + '"]')
-  );
+  return document.querySelector('#marker-layer .pin[data-id="' + id + '"]:not([hidden])');
 }
 
 function pointAt(card, id) {
@@ -310,49 +203,18 @@ function renderDetail(asset) {
   }
 }
 
-function ensureInsets() {
-  if (insetsEl.childElementCount) return;
-  for (const inset of locations.insets || []) {
-    const panel = document.createElement("div");
-    panel.className = "inset";
-    panel.dataset.inset = inset.id;
-    const img = document.createElement("img");
-    img.className = "inset-img";
-    img.alt = inset.title || "Inset map";
-    img.src = inset.src;
-    img.addEventListener("load", function () {
-      render();
-    });
-    const ring = document.createElement("div");
-    ring.className = "inset-ring";
-    ring.hidden = true;
-    const pins = document.createElement("div");
-    pins.className = "inset-pins";
-    const link = document.createElement("a");
-    link.className = "source-link";
-    link.href = inset.sourceUrl;
-    link.target = "_blank";
-    link.rel = "noopener";
-    link.textContent = "Source";
-    panel.append(img, ring, pins, link);
-    insetsEl.append(panel);
-  }
-}
-
 function render() {
-  if (!guide || !revealCatalog || !locations) return;
+  if (!guide || !revealCatalog) return;
   const assetScroll = assetRow.scrollLeft;
   const screenScroll = onscreenRow.scrollLeft;
   const time = activeTime();
   const view = OnScreen.lookupAt(guide, time);
-  const sceneName = view.scene && (view.scene.name || view.scene.summary);
-  const camera = sceneView(sceneName || "");
+  const sceneName = (view.scene && (view.scene.name || view.scene.summary)) || "";
   titleEl.textContent = guide.title || "The Boy in the Iceberg";
   clock.textContent = OnScreen.formatClock(time);
   scrub.max = String(Math.max(60, ...guide.scenes.map((scene) => scene.end || 0)));
   if (document.activeElement !== scrub) scrub.value = String(Math.round(time));
-  const here = positionAt(time);
-  const visible = OnScreen.getVisibleAssets(guide, revealCatalog, here, { revealAll });
+  const visible = OnScreen.getVisibleAssets(guide, revealCatalog, positionAt(time), { revealAll });
 
   if (liveSocket && liveSocket.readyState === WebSocket.OPEN) {
     connection.textContent = live && live.episodeTitle ? "Live · " + live.episodeTitle : "Live";
@@ -366,14 +228,19 @@ function render() {
   playButton.textContent = playing ? "Pause" : "Play";
   playButton.classList.toggle("on", playing);
 
-  markers.replaceChildren();
+  sceneMarks.replaceChildren();
   const duration = Number(scrub.max) || 1;
   for (const scene of guide.scenes) {
     const mark = document.createElement("span");
     mark.className = "marker";
     mark.dataset.name = scene.name || scene.summary || "Scene";
     mark.style.left = (100 * (scene.start || 0)) / duration + "%";
-    markers.append(mark);
+    sceneMarks.append(mark);
+  }
+  if (globe && sceneName !== lastScene && !editing) {
+    lastScene = sceneName;
+    const target = placeBook && placeBook.sceneTargets && placeBook.sceneTargets[sceneName];
+    if (target) globe.focusPlace(target.place, target.distance);
   }
 
   const speakingIds = {};
@@ -391,53 +258,6 @@ function render() {
     });
   }
 
-  ensureInsets();
-  worldMap.src = locations.worldMap.src;
-  mapSource.href = locations.worldMap.sourceUrl;
-  applyWorldCrop(camera);
-
-  const focus = worldToView(camera.x, camera.y, camera);
-  if (focus) {
-    sceneRing.hidden = false;
-    sceneRing.style.left = focus.x + "%";
-    sceneRing.style.top = focus.y + "%";
-  } else {
-    sceneRing.hidden = true;
-  }
-
-  worldPins.replaceChildren();
-  for (const inset of locations.insets || []) {
-    const panel = insetsEl.querySelector('[data-inset="' + inset.id + '"]');
-    if (!panel) continue;
-    panel.querySelector(".inset-pins").replaceChildren();
-    const ring = panel.querySelector(".inset-ring");
-    const img = panel.querySelector(".inset-img");
-    const onImage = worldToInsetImage(camera.x, camera.y, inset);
-    const onPanel = onImage && coverPoint(img, onImage.x, onImage.y);
-    if (onPanel) {
-      ring.hidden = false;
-      ring.style.left = onPanel.x + "%";
-      ring.style.top = onPanel.y + "%";
-    } else {
-      ring.hidden = true;
-    }
-  }
-
-  for (const asset of visible) {
-    const spot = OnScreen.locationAt(framesFor(asset.id), time);
-    if (!spot) continue;
-    const onWorld = worldToView(spot.x, spot.y, camera);
-    if (onWorld) worldPins.append(makePin(asset, onWorld, "world"));
-    for (const inset of locations.insets || []) {
-      const onImage = worldToInsetImage(spot.x, spot.y, inset);
-      if (!onImage) continue;
-      const panel = insetsEl.querySelector('[data-inset="' + inset.id + '"]');
-      const img = panel && panel.querySelector(".inset-img");
-      const onPanel = img && coverPoint(img, onImage.x, onImage.y);
-      if (onPanel) panel.querySelector(".inset-pins").append(makePin(asset, onPanel, "inset"));
-    }
-  }
-
   if (selectedId) {
     const asset = visible.find((item) => item.id === selectedId);
     mapView.hidden = true;
@@ -453,7 +273,7 @@ function render() {
     detail.hidden = true;
   }
 
-  const ranked = visible.slice().sort((a, b) => relevance(b, time, camera) - relevance(a, time, camera));
+  const ranked = visible.slice().sort((a, b) => relevance(b) - relevance(a));
   const onScreen = ranked.filter((asset) => asset.type === "character" && (revealAll || aroundIds[asset.id]));
   const onScreenIds = {};
   onScreen.forEach((asset) => {
@@ -568,6 +388,35 @@ document.querySelector("#back").addEventListener("click", function () {
   hoverId = null;
   hideArrow();
   render();
+  if (globe) globe.resize();
+});
+
+editButton.addEventListener("click", function () {
+  editing = !editing;
+  editButton.classList.toggle("on", editing);
+  editButton.textContent = editing ? "Done" : "Edit places";
+  copyButton.hidden = !editing;
+  if (globe) globe.setEditing(editing);
+});
+
+copyButton.addEventListener("click", async function () {
+  if (!globe) return;
+  const json = globe.exportJson();
+  try {
+    await navigator.clipboard.writeText(json);
+    copyButton.textContent = "Copied";
+  } catch (error) {
+    const area = document.createElement("textarea");
+    area.value = json;
+    document.body.append(area);
+    area.select();
+    document.execCommand("copy");
+    area.remove();
+    copyButton.textContent = "Copied";
+  }
+  setTimeout(function () {
+    copyButton.textContent = "Copy JSON";
+  }, 1200);
 });
 
 assetRow.addEventListener("scroll", function () {
@@ -581,17 +430,35 @@ onscreenRow.addEventListener("scroll", function () {
   if (card) pointAt(card, hoverId);
 });
 window.addEventListener("resize", function () {
-  render();
+  if (globe) globe.resize();
 });
 
 Promise.all([
   fetch("data/guide.json").then((response) => response.json()),
   fetch("data/reveal.json").then((response) => response.json()),
-  fetch("data/locations.json").then((response) => response.json()),
-]).then(function (loaded) {
+  fetch("data/world/south-pole.json").then((response) => response.json()),
+  fetch("data/world/places.json").then((response) => response.json()),
+]).then(async function (loaded) {
   guide = loaded[0];
   revealCatalog = loaded[1];
-  locations = loaded[2];
+  const world = loaded[2];
+  placeBook = loaded[3];
+  try {
+    globe = await mountGlobe(document.querySelector("#globe"), world, {
+      places: placeBook,
+      markers: markerLayer,
+      isVisible: function () {
+        return !mapView.hidden && !document.hidden;
+      },
+      onMarkerClick: function (assetId) {
+        selectedId = assetId;
+        render();
+      },
+    });
+  } catch (error) {
+    connection.textContent = "Could not start the globe";
+    console.error(error);
+  }
   render();
   connectLive();
 }).catch(function (error) {

@@ -102,7 +102,7 @@ button, .card {
   accent-color: var(--amber);
 }
 
-#markers { position: absolute; inset: 0; pointer-events: none; }
+#scene-markers { position: absolute; inset: 0; pointer-events: none; }
 
 .marker {
   position: absolute;
@@ -142,87 +142,46 @@ button, .card {
 }
 
 #map-view, #detail { height: 100%; }
+#map-view { position: relative; }
 
-#map-row {
-  display: flex;
-  flex-direction: row;
-  height: 100%;
-  gap: 8px;
-  padding: 8px;
-  min-width: 0;
+#globe { width: 100%; height: 100%; display: block; }
+
+#marker-layer { position: absolute; inset: 0; pointer-events: none; }
+
+#marker-layer .pin {
+  width: auto;
+  height: auto;
+  overflow: visible;
+  border-radius: 999px;
+  padding: 3px 8px;
+  font-size: 12px;
+  line-height: 1.2;
+  white-space: nowrap;
+  transform: translate(-50%, -130%);
+  background: rgba(14, 18, 28, 0.88);
 }
 
-#insets {
-  flex: 1 1 auto;
-  min-width: 0;
-  display: flex;
-  gap: 8px;
-  height: 100%;
-}
+#marker-layer.editing .pin { cursor: grab; }
+#marker-layer .pin { pointer-events: auto; }
 
-.inset {
-  position: relative;
-  flex: 1 1 0;
-  min-width: 0;
-  height: 100%;
-  border-radius: 12px;
-  overflow: hidden;
-  background: #101820;
-}
-
-.inset-img {
-  width: 100%;
-  height: 100%;
-  object-fit: cover;
-  display: block;
-}
-
-#world-panel {
-  flex: 0 0 auto;
-  height: 100%;
-  aspect-ratio: 0.82;
-  max-width: 68%;
-  position: relative;
-  border-radius: 12px;
-  overflow: hidden;
-  background: #101820;
-}
-
-#world-view { position: absolute; inset: 0; overflow: hidden; }
-
-#world-map {
+#globe-tools {
   position: absolute;
-  max-width: none;
-  display: block;
+  top: 10px;
+  left: 10px;
+  z-index: 4;
+  display: flex;
+  gap: 8px;
 }
 
-#scene-ring, .inset-ring {
-  position: absolute;
-  width: 64px;
-  height: 64px;
-  border-radius: 50%;
-  border: 2px solid rgba(231, 161, 90, 0.95);
-  box-shadow: 0 0 0 8px rgba(231, 161, 90, 0.22);
-  transform: translate(-50%, -50%);
-  pointer-events: none;
-}
+#globe-tools button { padding: 6px 12px; background: rgba(14, 18, 28, 0.88); }
+#edit-places.on { background: var(--amber); color: #1b130c; border-color: transparent; font-weight: 700; }
 
 .pin {
   position: absolute;
-  width: 34px;
-  height: 34px;
-  border-radius: 50%;
-  overflow: hidden;
-  transform: translate(-50%, -50%);
   border: 2px solid #f4efe6;
-  background: #10141c;
   box-shadow: 0 4px 12px rgba(0, 0, 0, 0.35);
-  padding: 0;
   z-index: 2;
 }
-
-.pin.place, .pin.object { width: 28px; height: 28px; border-radius: 7px; }
-.pin img { width: 100%; height: 100%; object-fit: cover; display: block; pointer-events: none; }
 
 .source-link {
   position: absolute;
@@ -236,8 +195,6 @@ button, .card {
   border-radius: 8px;
   text-decoration: none;
 }
-
-.inset .source-link { right: 6px; bottom: 6px; }
 
 #detail { position: relative; background: #141a24; }
 #back {
